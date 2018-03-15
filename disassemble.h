@@ -507,7 +507,9 @@ class Disassemble
         12 = ooo #xxxx          ORA AND EOR ADC BIT LDA CMP SBC
     */
 
-        std::cout << formatOperandBytes(2 - m) << operations_alu0[operation];
+        const static std::string operations[]{"ORA"s, "AND"s, "EOR"s, "ADC"s, "BIT"s, "LDA"s, "CMP"s, "SBC"s};
+
+        std::cout << formatOperandBytes(2 - m) << operations[operation];
         std::cout << ' ' << handleAImmediate();
     }
 
