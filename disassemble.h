@@ -35,7 +35,7 @@ class Disassemble
     07 = ooo [xx]           ORA AND EOR ADC STA LDA CMP SBC
     08 = ooo                PHP PLP PHA PLA DEY TAY INY INX
     09 = ooo #xxxx          ORA AND EOR ADC BIT LDA CMP SBC
-    0A = ooo                ASL ROL LSR ROR TXA TAX DEC NOP
+    0A = ooo                ASL ROL LSR ROR TXA TAX DEX NOP
     0B = ooo                PHD PLD PHK RTL PHB PLB WAI XBA
     0C = ooo xxxx           TSB BIT JMP     STY LDY CPY CPX
     0C = JMP (xxxx)                     JMP
@@ -386,10 +386,10 @@ class Disassemble
     {
     /*
                                 0   1   2   3   4   5   6   7
-        14 = ooo                ASL ROL LSR ROR TXA TAX DEC NOP
+        14 = ooo                ASL ROL LSR ROR TXA TAX DEX NOP
     */
 
-        const static std::string operations[]{"ASL A"s, "ROL A"s, "LSR A"s, "ROR A"s, "TXA"s, "TAX"s, "DEC A"s, "NOP"s};
+        const static std::string operations[]{"ASL A"s, "ROL A"s, "LSR A"s, "ROR A"s, "TXA"s, "TAX"s, "DEX"s, "NOP"s};
 
         std::cout << formatOperandBytes(0) << operations[operation];
     }
