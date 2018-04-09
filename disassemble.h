@@ -389,7 +389,7 @@ class Disassemble
         14 = ooo                ASL ROL LSR ROR TXA TAX DEC NOP
     */
 
-        const static std::string operations[]{"ASL"s, "ROL"s, "LSR"s, "ROR"s, "TXA"s, "TAX"s, "DEC"s, "NOP"s};
+        const static std::string operations[]{"ASL A"s, "ROL A"s, "LSR A"s, "ROR A"s, "TXA"s, "TAX"s, "DEC A"s, "NOP"s};
 
         std::cout << formatOperandBytes(0) << operations[operation];
     }
@@ -615,7 +615,7 @@ class Disassemble
         15 = ooo                INC DEC PHY PLY TXS TSX PHX PLX
     */
 
-        const static std::string operations[]{"INC"s, "DEC"s, "PHY"s, "PLY"s, "TXS"s, "TSX"s, "PHX"s, "PLX"s};
+        const static std::string operations[]{"INC A"s, "DEC A"s, "PHY"s, "PLY"s, "TXS"s, "TSX"s, "PHX"s, "PLX"s};
 
         std::cout << formatOperandBytes(0) << operations[operation];
     }
