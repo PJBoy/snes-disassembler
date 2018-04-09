@@ -70,7 +70,6 @@ class Disassemble
 */
 
     const inline static std::string operations_alu0[]{"ORA"s, "AND"s, "EOR"s, "ADC"s, "STA"s, "LDA"s, "CMP"s, "SBC"s};
-    const inline static std::string operations_alu1[]{"ASL"s, "ROL"s, "LSR"s, "ROR"s, "STX"s, "LDX"s, "DEC"s, "INC"s};
 
     It it_rom, end_rom;
     long_t romAddress;
@@ -232,19 +231,6 @@ class Disassemble
         }
     }
 
-    void branch(unsigned operation)
-    {
-    /*
-                                0   1   2   3   4   5   6   7
-        1  = Boo xx             BPL BMI BVC BVS BCC BCS BNE BEQ
-    */
-
-        const static std::string operations[]{"BPL"s, "BMI"s, "BVC"s, "BVS"s, "BCC"s, "BCS"s, "BNE"s, "BEQ"s};
-
-        std::cout << formatOperandBytes(1) << operations[operation];
-        std::cout << ' ' << handleRelativeByteAddress();
-    }
-
     void indexedIndirect(unsigned operation)
     {
     /*
@@ -254,17 +240,6 @@ class Disassemble
 
         std::cout << formatOperandBytes(1) << operations_alu0[operation];
         std::cout << " ("s << format(loadByte()) << ",x)"s;
-    }
-
-    void indirectIndexed(unsigned operation)
-    {
-    /*
-                                0   1   2   3   4   5   6   7
-        3  = ooo (xx),Y         ORA AND EOR ADC STA LDA CMP SBC
-    */
-
-        std::cout << formatOperandBytes(1) << operations_alu0[operation];
-        std::cout << " ("s << format(loadByte()) << "),y"s;
     }
 
     void addressMode4(unsigned operation)
@@ -299,7 +274,7 @@ class Disassemble
                 break;
 
             case 5:
-                std::cout << formatOperandBytes(2) << operations[operation];
+                std::cout << formatOperandBytes(2 - x) << operations[operation];
                 std::cout << ' ' << handleXYImmediate();
                 break;
 
@@ -311,17 +286,6 @@ class Disassemble
         }
     }
 
-    void indirectShort(unsigned operation)
-    {
-    /*
-                                0   1   2   3   4   5   6   7
-        5  = ooo (xx)           ORA AND EOR ADC STA LDA CMP SBC
-    */
-
-        std::cout << formatOperandBytes(1) << operations_alu0[operation];
-        std::cout << " ("s << format(loadByte()) << ")"s;
-    }
-
     void stackRelative(unsigned operation)
     {
     /*
@@ -331,17 +295,6 @@ class Disassemble
 
         std::cout << formatOperandBytes(1) << operations_alu0[operation];
         std::cout << ' ' << format(loadByte()) << ",s"s;
-    }
-
-    void stackRelativeIndirectIndexed(unsigned operation)
-    {
-    /*
-                                0   1   2   3   4   5   6   7
-        7  = ooo (xx,S),Y       ORA AND EOR ADC STA LDA CMP SBC
-    */
-
-        std::cout << formatOperandBytes(1) << operations_alu0[operation];
-        std::cout << " ("s << format(loadByte()) << ",s),y"s;
     }
 
     void addressMode8(unsigned operation)
@@ -357,13 +310,195 @@ class Disassemble
         if (operation == 2)
         {
             std::cout << formatOperandBytes(2) << operations[operation];
-            std::cout << ' ' << format(loadByte()) << ' ' << format(loadByte());
+            std::cout << ' ' << format(loadByte());
+            std::cout << ' ' << format(loadByte());
         }
         else
         {
             std::cout << formatOperandBytes(1) << operations[operation];
             std::cout << ' ' << handleByteAddress();
         }
+    }
+
+    void directPageAlu0(unsigned operation)
+    {
+    /*
+                                0   1   2   3   4   5   6   7
+        A  = ooo xx             ORA AND EOR ADC STA LDA CMP SBC
+    */
+
+        std::cout << formatOperandBytes(1) << operations_alu0[operation];
+        std::cout << ' ' << handleByteAddress();
+    }
+
+    void directPageAlu1(unsigned operation)
+    {
+    /*
+                                0   1   2   3   4   5   6   7
+        C  = ooo xx             ASL ROL LSR ROR STX LDX DEC INC
+    */
+
+        const static std::string operations[]{"ASL"s, "ROL"s, "LSR"s, "ROR"s, "STX"s, "LDX"s, "DEC"s, "INC"s};
+
+        std::cout << formatOperandBytes(1) << operations[operation];
+        std::cout << ' ' << handleByteAddress();
+    }
+
+    void indirectLong(unsigned operation)
+    {
+    /*
+                                0   1   2   3   4   5   6   7
+        E  = ooo [xx]           ORA AND EOR ADC STA LDA CMP SBC
+    */
+
+        std::cout << formatOperandBytes(1) << operations_alu0[operation];
+        std::cout << " ["s << format(loadByte()) << "]"s;
+    }
+
+    void implied0(unsigned operation)
+    {
+    /*
+                                0   1   2   3   4   5   6   7
+        10 = ooo                PHP PLP PHA PLA DEY TAY INY INX
+    */
+
+        const static std::string operations[]{"PHP"s, "PLP"s, "PHA"s, "PLA"s, "DEY"s, "TAY"s, "INY"s, "INX"s};
+
+        std::cout << formatOperandBytes(0) << operations[operation];
+    }
+
+    void immediate(unsigned operation)
+    {
+    /*
+                                0   1   2   3   4   5   6   7
+        12 = ooo #xxxx          ORA AND EOR ADC BIT LDA CMP SBC
+    */
+
+        const static std::string operations[]{"ORA"s, "AND"s, "EOR"s, "ADC"s, "BIT"s, "LDA"s, "CMP"s, "SBC"s};
+
+        std::cout << formatOperandBytes(2 - m) << operations[operation];
+        std::cout << ' ' << handleAImmediate();
+    }
+
+    void implied2(unsigned operation)
+    {
+    /*
+                                0   1   2   3   4   5   6   7
+        14 = ooo                ASL ROL LSR ROR TXA TAX DEC NOP
+    */
+
+        const static std::string operations[]{"ASL"s, "ROL"s, "LSR"s, "ROR"s, "TXA"s, "TAX"s, "DEC"s, "NOP"s};
+
+        std::cout << formatOperandBytes(0) << operations[operation];
+    }
+
+    void implied4(unsigned operation)
+    {
+    /*
+                                0   1   2   3   4   5   6   7
+        16 = ooo                PHD PLD PHK RTL PHB PLB WAI XBA
+    */
+
+        const static std::string operations[]{"PHD"s, "PLD"s, "PHK"s, "RTL"s, "PHB"s, "PLB"s, "WAI"s, "XBA"s};
+
+        std::cout << formatOperandBytes(0) << operations[operation];
+    }
+
+    void addressMode18(unsigned operation)
+    {
+    /*
+                                0   1   2   3   4   5   6   7
+        18 = ooo xxxx           TSB BIT JMP     STY LDY CPY CPX
+        18 = JMP (xxxx)                     JMP
+    */
+
+        const static std::string operations[]{"TSB"s, "BIT"s, "JMP"s, "JMP"s, "STY"s, "LDY"s, "CPY"s, "CPX"s};
+
+        std::cout << formatOperandBytes(2) << operations[operation] << ' ';
+        if (operation == 3)
+            std::cout << '(' << format(loadWord()) << ')';
+        else
+            std::cout << handleWordAddress();
+    }
+
+    void direct(unsigned operation)
+    {
+    /*
+                                0   1   2   3   4   5   6   7
+        1A = ooo xxxx           ORA AND EOR ADC STA LDA CMP SBC
+    */
+
+        std::cout << formatOperandBytes(2) << operations_alu0[operation];
+        std::cout << ' ' << handleWordAddress();
+    }
+
+    void implied6(unsigned operation)
+    {
+    /*
+                                0   1   2   3   4   5   6   7
+        1C = xxxx               ASL ROL LSR ROR STX LDX DEC INC
+    */
+
+        const static std::string operations[]{"ASL"s, "ROL"s, "LSR"s, "ROR"s, "STX"s, "LDX"s, "DEC"s, "INC"s};
+
+        std::cout << formatOperandBytes(0) << operations[operation];
+    }
+
+    void directLong(unsigned operation)
+    {
+    /*
+                                0   1   2   3   4   5   6   7
+        1E = ooo xxxxxx         ORA AND EOR ADC STA LDA CMP SBC
+    */
+
+        std::cout << formatOperandBytes(3) << operations_alu0[operation];
+        std::cout << ' ' << handleLongAddress();
+    }
+
+    void branch(unsigned operation)
+    {
+    /*
+                                0   1   2   3   4   5   6   7
+        1  = Boo xx             BPL BMI BVC BVS BCC BCS BNE BEQ
+    */
+
+        const static std::string operations[]{"BPL"s, "BMI"s, "BVC"s, "BVS"s, "BCC"s, "BCS"s, "BNE"s, "BEQ"s};
+
+        std::cout << formatOperandBytes(1) << operations[operation];
+        std::cout << ' ' << handleRelativeByteAddress();
+    }
+
+    void indirectIndexed(unsigned operation)
+    {
+    /*
+                                0   1   2   3   4   5   6   7
+        3  = ooo (xx),Y         ORA AND EOR ADC STA LDA CMP SBC
+    */
+
+        std::cout << formatOperandBytes(1) << operations_alu0[operation];
+        std::cout << " ("s << format(loadByte()) << "),y"s;
+    }
+
+    void indirectShort(unsigned operation)
+    {
+    /*
+                                0   1   2   3   4   5   6   7
+        5  = ooo (xx)           ORA AND EOR ADC STA LDA CMP SBC
+    */
+
+        std::cout << formatOperandBytes(1) << operations_alu0[operation];
+        std::cout << " ("s << format(loadByte()) << ")"s;
+    }
+
+    void stackRelativeIndirectIndexed(unsigned operation)
+    {
+    /*
+                                0   1   2   3   4   5   6   7
+        7  = ooo (xx,S),Y       ORA AND EOR ADC STA LDA CMP SBC
+    */
+
+        std::cout << formatOperandBytes(1) << operations_alu0[operation];
+        std::cout << " ("s << format(loadByte()) << ",s),y"s;
     }
 
     void addressMode9(unsigned operation)
@@ -396,7 +531,9 @@ class Disassemble
 
             case 2:
                 std::cout << formatOperandBytes(2) << operations[operation];
-                std::cout << ' ' << format(loadByte()) << ' ' << format(loadByte());
+                std::cout << ' ' << format(loadByte());
+                std::cout << ' ' << format(loadByte());
+                break;
 
             case 6:
                 std::cout << formatOperandBytes(1) << operations[operation];
@@ -410,17 +547,6 @@ class Disassemble
         }
     }
 
-    void directPageAlu0(unsigned operation)
-    {
-    /*
-                                0   1   2   3   4   5   6   7
-        A  = ooo xx             ORA AND EOR ADC STA LDA CMP SBC
-    */
-
-        std::cout << formatOperandBytes(1) << operations_alu0[operation];
-        std::cout << ' ' << handleByteAddress();
-    }
-
     void indexdDirectPageAlu0(unsigned operation)
     {
     /*
@@ -432,17 +558,6 @@ class Disassemble
         std::cout << ' ' << format(loadByte());
     }
 
-    void directPageAlu1(unsigned operation)
-    {
-    /*
-                                0   1   2   3   4   5   6   7
-        C  = ooo xx             ASL ROL LSR ROR STX LDX DEC INC
-    */
-
-        std::cout << formatOperandBytes(1) << operations_alu1[operation];
-        std::cout << ' ' << handleByteAddress();
-    }
-
     void indexdDirectPageAlu1(unsigned operation)
     {
     /*
@@ -450,19 +565,10 @@ class Disassemble
         D  = ooo xx,X           ASL ROL LSR ROR STX LDX DEC INC
     */
 
-        std::cout << formatOperandBytes(1) << operations_alu1[operation];
+        const static std::string operations[]{"ASL"s, "ROL"s, "LSR"s, "ROR"s, "STX"s, "LDX"s, "DEC"s, "INC"s};
+
+        std::cout << formatOperandBytes(1) << operations[operation];
         std::cout << ' ' << format(loadByte());
-    }
-
-    void indirectLong(unsigned operation)
-    {
-    /*
-                                0   1   2   3   4   5   6   7
-        E  = ooo [xx]           ORA AND EOR ADC STA LDA CMP SBC
-    */
-
-        std::cout << formatOperandBytes(1) << operations_alu0[operation];
-        std::cout << " ["s << format(loadByte()) << "]"s;
     }
 
     void indirectLongIndexed(unsigned operation)
@@ -474,18 +580,6 @@ class Disassemble
 
         std::cout << formatOperandBytes(1) << operations_alu0[operation];
         std::cout << " ["s << format(loadByte()) << "],y"s;
-    }
-
-    void implied0(unsigned operation)
-    {
-    /*
-                                0   1   2   3   4   5   6   7
-        10 = ooo                PHP PLP PHA PLA DEY TAY INY INX
-    */
-
-        const static std::string operations[]{"PHP"s, "PLP"s, "PHA"s, "PLA"s, "DEY"s, "TAY"s, "INY"s, "INX"s};
-
-        std::cout << formatOperandBytes(0) << operations[operation];
     }
 
     void implied1(unsigned operation)
@@ -500,19 +594,6 @@ class Disassemble
         std::cout << formatOperandBytes(0) << operations[operation];
     }
 
-    void immediate(unsigned operation)
-    {
-    /*
-                                0   1   2   3   4   5   6   7
-        12 = ooo #xxxx          ORA AND EOR ADC BIT LDA CMP SBC
-    */
-
-        const static std::string operations[]{"ORA"s, "AND"s, "EOR"s, "ADC"s, "BIT"s, "LDA"s, "CMP"s, "SBC"s};
-
-        std::cout << formatOperandBytes(2 - m) << operations[operation];
-        std::cout << ' ' << handleAImmediate();
-    }
-
     void indexedY(unsigned operation)
     {
     /*
@@ -522,18 +603,6 @@ class Disassemble
 
         std::cout << formatOperandBytes(2) << operations_alu0[operation];
         std::cout << ' ' << format(loadWord()) << ",y"s;
-    }
-
-    void implied2(unsigned operation)
-    {
-    /*
-                                0   1   2   3   4   5   6   7
-        14 = ooo                ASL ROL LSR ROR TXA TAX DEC NOP
-    */
-
-        const static std::string operations[]{"ASL"s, "ROL"s, "LSR"s, "ROR"s, "TXA"s, "TAX"s, "DEC"s, "NOP"s};
-
-        std::cout << formatOperandBytes(0) << operations[operation];
     }
 
     void implied3(unsigned operation)
@@ -548,18 +617,6 @@ class Disassemble
         std::cout << formatOperandBytes(0) << operations[operation];
     }
 
-    void implied4(unsigned operation)
-    {
-    /*
-                                0   1   2   3   4   5   6   7
-        16 = ooo                PHD PLD PHK RTL PHB PLB WAI XBA
-    */
-
-        const static std::string operations[]{"PHD"s, "PLD"s, "PHK"s, "RTL"s, "PHB"s, "PLB"s, "WAI"s, "XBA"s};
-
-        std::cout << formatOperandBytes(0) << operations[operation];
-    }
-
     void implied5(unsigned operation)
     {
     /*
@@ -570,23 +627,6 @@ class Disassemble
         const static std::string operations[]{"TCS"s, "TSC"s, "TCD"s, "TDC"s, "TXY"s, "TYX"s, "STP"s, "XCE"s};
 
         std::cout << formatOperandBytes(0) << operations[operation];
-    }
-
-    void addressMode18(unsigned operation)
-    {
-    /*
-                                0   1   2   3   4   5   6   7
-        18 = ooo xxxx           TSB BIT JMP     STY LDY CPY CPX
-        18 = JMP (xxxx)                     JMP
-    */
-
-        const static std::string operations[]{"TSB"s, "BIT"s, "JMP"s, "JMP"s, "STY"s, "LDY"s, "CPY"s, "CPX"s};
-
-        std::cout << formatOperandBytes(2) << operations[operation] << ' ';
-        if (operation == 3)
-            std::cout << '(' << format(loadWord()) << ')';
-        else
-            std::cout << handleWordAddress();
     }
 
     void addressMode19(unsigned operation)
@@ -634,17 +674,6 @@ class Disassemble
         }
     }
 
-    void direct(unsigned operation)
-    {
-    /*
-                                0   1   2   3   4   5   6   7
-        1A = ooo xxxx           ORA AND EOR ADC STA LDA CMP SBC
-    */
-
-        std::cout << formatOperandBytes(2) << operations_alu0[operation];
-        std::cout << ' ' << handleWordAddress();
-    }
-
     void indexedX(unsigned operation)
     {
     /*
@@ -656,16 +685,6 @@ class Disassemble
         std::cout << ' ' << format(loadWord()) << ",x"s;
     }
 
-    void implied6(unsigned operation)
-    {
-    /*
-                                0   1   2   3   4   5   6   7
-        1C = xxxx               ASL ROL LSR ROR STX LDX DEC INC
-    */
-
-        std::cout << formatOperandBytes(0) << operations_alu1[operation];
-    }
-
     void addressMode1D(unsigned operation)
     {
     /*
@@ -674,19 +693,10 @@ class Disassemble
         1D = ooo xxxx,Y                             LDX
     */
 
-        std::cout << formatOperandBytes(2) << operations_alu0[operation];
+        const static std::string operations[]{"ASL"s, "ROL"s, "LSR"s, "ROR"s, "STZ"s, "LDX"s, "DEC"s, "INC"s};
+
+        std::cout << formatOperandBytes(2) << operations[operation];
         std::cout << ' ' << handleWordAddress() << ',' << 'x' + (operation == 5);
-    }
-
-    void directLong(unsigned operation)
-    {
-    /*
-                                0   1   2   3   4   5   6   7
-        1E = ooo xxxxxx         ORA AND EOR ADC STA LDA CMP SBC
-    */
-
-        std::cout << formatOperandBytes(3) << operations_alu0[operation];
-        std::cout << ' ' << handleLongAddress();
     }
 
     void indexedLong(unsigned operation)

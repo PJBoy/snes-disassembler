@@ -22,7 +22,6 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{0D1DB530-F17F-4890-8B19-EEB3D1E962DF}</ProjectGuid>
     <RootNamespace>Disassembler</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17095.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
