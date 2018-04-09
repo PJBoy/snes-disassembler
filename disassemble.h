@@ -40,7 +40,7 @@ class Disassemble
     0C = ooo xxxx           TSB BIT JMP     STY LDY CPY CPX
     0C = JMP (xxxx)                     JMP
     0D = ooo xxxx           ORA AND EOR ADC STA LDA CMP SBC
-    0E = xxxx               ASL ROL LSR ROR STX LDX DEC INC
+    0E = ooo xxxx           ASL ROL LSR ROR STX LDX DEC INC
     0F = ooo xxxxxx         ORA AND EOR ADC STA LDA CMP SBC
     10 = Boo xx             BPL BMI BVC BVS BCC BCS BNE BEQ
     11 = ooo (xx),Y         ORA AND EOR ADC STA LDA CMP SBC
@@ -88,12 +88,14 @@ class Disassemble
 
     word_t loadWord()
     {
-        return loadByte() | loadByte() << 8;
+        byte_t low(loadByte());
+        return low | loadByte() << 8;
     }
 
     long_t loadLong()
     {
-        return loadWord() | loadByte() << 16;
+        word_t low(loadWord());
+        return low | loadByte() << 16;
     }
 
     template<typename Int>
@@ -242,7 +244,7 @@ class Disassemble
         std::cout << " ("s << format(loadByte()) << ",x)"s;
     }
 
-    void addressMode4(unsigned operation)
+    void addressMode2(unsigned operation)
     {
     /*
                                 0   1   2   3   4   5   6   7
@@ -297,7 +299,7 @@ class Disassemble
         std::cout << ' ' << format(loadByte()) << ",s"s;
     }
 
-    void addressMode8(unsigned operation)
+    void addressMode4(unsigned operation)
     {
     /*
                                 0   1   2   3   4   5   6   7
@@ -404,7 +406,7 @@ class Disassemble
         std::cout << formatOperandBytes(0) << operations[operation];
     }
 
-    void addressMode18(unsigned operation)
+    void addressModeC(unsigned operation)
     {
     /*
                                 0   1   2   3   4   5   6   7
@@ -421,7 +423,7 @@ class Disassemble
             std::cout << handleWordAddress();
     }
 
-    void direct(unsigned operation)
+    void direct0(unsigned operation)
     {
     /*
                                 0   1   2   3   4   5   6   7
@@ -432,7 +434,7 @@ class Disassemble
         std::cout << ' ' << handleWordAddress();
     }
 
-    void implied6(unsigned operation)
+    void direct1(unsigned operation)
     {
     /*
                                 0   1   2   3   4   5   6   7
@@ -442,6 +444,7 @@ class Disassemble
         const static std::string operations[]{"ASL"s, "ROL"s, "LSR"s, "ROR"s, "STX"s, "LDX"s, "DEC"s, "INC"s};
 
         std::cout << formatOperandBytes(0) << operations[operation];
+        std::cout << ' ' << handleWordAddress();
     }
 
     void directLong(unsigned operation)
@@ -501,7 +504,7 @@ class Disassemble
         std::cout << " ("s << format(loadByte()) << ",s),y"s;
     }
 
-    void addressMode9(unsigned operation)
+    void addressMode14(unsigned operation)
     {
     /*
                                 0   1   2   3   4   5   6   7
@@ -629,7 +632,7 @@ class Disassemble
         std::cout << formatOperandBytes(0) << operations[operation];
     }
 
-    void addressMode19(unsigned operation)
+    void addressMode1C(unsigned operation)
     {
     /*
                                 0   1   2   3   4   5   6   7
@@ -685,7 +688,7 @@ class Disassemble
         std::cout << ' ' << format(loadWord()) << ",x"s;
     }
 
-    void addressMode1D(unsigned operation)
+    void addressMode1E(unsigned operation)
     {
     /*
                                 0   1   2   3   4   5   6   7
@@ -717,9 +720,9 @@ class Disassemble
         {
             &Disassemble::addressMode0,
             &Disassemble::indexedIndirect,
-            &Disassemble::addressMode4,
+            &Disassemble::addressMode2,
             &Disassemble::stackRelative,
-            &Disassemble::addressMode8,
+            &Disassemble::addressMode4,
             &Disassemble::directPageAlu0,
             &Disassemble::directPageAlu1,
             &Disassemble::indirectLong,
@@ -727,15 +730,15 @@ class Disassemble
             &Disassemble::immediate,
             &Disassemble::implied2,
             &Disassemble::implied4,
-            &Disassemble::addressMode18,
-            &Disassemble::direct,
-            &Disassemble::implied6,
+            &Disassemble::addressModeC,
+            &Disassemble::direct0,
+            &Disassemble::direct1,
             &Disassemble::directLong,
             &Disassemble::branch,
             &Disassemble::indirectIndexed,
             &Disassemble::indirectShort,
             &Disassemble::stackRelativeIndirectIndexed,
-            &Disassemble::addressMode9,
+            &Disassemble::addressMode14,
             &Disassemble::indexdDirectPageAlu0,
             &Disassemble::indexdDirectPageAlu1,
             &Disassemble::indirectLongIndexed,
@@ -743,9 +746,9 @@ class Disassemble
             &Disassemble::indexedY,
             &Disassemble::implied3,
             &Disassemble::implied5,
-            &Disassemble::addressMode19,
+            &Disassemble::addressMode1C,
             &Disassemble::indexedX,
-            &Disassemble::addressMode1D,
+            &Disassemble::addressMode1E,
             &Disassemble::indexedLong
         };
 
