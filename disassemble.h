@@ -699,7 +699,7 @@ class Disassemble
         const static std::string operations[]{"ASL"s, "ROL"s, "LSR"s, "ROR"s, "STZ"s, "LDX"s, "DEC"s, "INC"s};
 
         std::cout << formatOperandBytes(2) << operations[operation];
-        std::cout << ' ' << handleWordAddress() << ',' << 'x' + (operation == 5);
+        std::cout << ' ' << handleWordAddress() << ',' << char('x' + (operation == 5));
     }
 
     void indexedLong(unsigned operation)
