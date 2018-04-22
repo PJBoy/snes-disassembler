@@ -62,7 +62,7 @@ class Disassemble
     1C = ooo xxxx,X             BIT             LDY
     1C = JMP xxxxxx                 JMP
     1C = Joo (xxxx,X)                   JMP             JSR
-    1C = JMP [xxxxxx]                               JMP
+    1C = JMP [xxxx]                                 JMP
     1D = ooo xxxx,X         ORA AND EOR ADC STA LDA CMP SBC
     1E = ooo xxxx,X         ASL ROL LSR ROR STZ     DEC INC
     1E = ooo xxxx,Y                             LDX
@@ -640,7 +640,7 @@ class Disassemble
         19 = ooo xxxx,X             BIT             LDY
         19 = JMP xxxxxx                 JMP
         19 = Joo (xxxx,X)                   JMP             JSR
-        19 = JMP [xxxxxx]                               JMP
+        19 = JMP [xxxx]                                 JMP
     */
 
         const static std::string operations[]{"TRB"s, "BIT"s, "JML"s, "JMP"s, "STZ"s, "LDY"s, "JML"s, "JSR"s};
@@ -671,8 +671,8 @@ class Disassemble
                 break;
 
             case 6:
-                std::cout << formatOperandBytes(3) << operations[operation];
-                std::cout << " ["s << format(loadLong()) << ']';
+                std::cout << formatOperandBytes(2) << operations[operation];
+                std::cout << " ["s << format(loadWord()) << ']';
                 break;
         }
     }
