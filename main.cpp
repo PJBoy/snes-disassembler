@@ -64,7 +64,8 @@ try
     const long_t romSize(snes2hex(programOptions.romEndAddress) - snes2hex(programOptions.romBeginAddress));
     std::valarray<byte_t> rom(romSize);
     {
-        std::ifstream romFile(programOptions.romFilepath);
+        std::ifstream romFile(programOptions.romFilepath, std::ios::binary);
+        romFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
         romFile.seekg(snes2hex(programOptions.romBeginAddress));
         romFile.read(reinterpret_cast<char*>(data(rom)), romSize);
     }
