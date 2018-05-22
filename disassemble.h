@@ -534,7 +534,7 @@ class Disassemble
             case 4:
             case 5:
                 std::cout << formatOperandBytes(1) << operations[operation];
-                std::cout << ' ' << handleByteAddress() << ",x"s;
+                std::cout << ' ' << format(loadByte()) << ",x"s;
                 break;
 
             case 2:
