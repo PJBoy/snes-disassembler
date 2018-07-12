@@ -443,7 +443,7 @@ class Disassemble
     {
         /*
                                 0   1   2   3   4   5   6   7
-        1C = xxxx               ASL ROL LSR ROR STX LDX DEC INC
+        1C = ooo xxxx           ASL ROL LSR ROR STX LDX DEC INC
     */
 
         const static std::string operations[]{"ASL"s, "ROL"s, "LSR"s, "ROR"s, "STX"s, "LDX"s, "DEC"s, "INC"s};
@@ -787,5 +787,5 @@ public:
 template<typename It>
 void disassemble(It&& rom_begin, It&& rom_end, long_t romBeginAddress, bool m = false, bool x = false)
 {
-    Disassemble<It>(std::forward<It>(rom_begin), std::forward<It>(rom_end), romBeginAddress);
+    Disassemble<It>(std::forward<It>(rom_begin), std::forward<It>(rom_end), romBeginAddress, m, x);
 }
