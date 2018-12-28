@@ -15,7 +15,7 @@
 template<typename It>
 class Disassemble
 {
-    /*
+/*
                             0   1   2   3   4   5   6   7
     00 = ooo                BRK     RTI RTS
     00 = JSR xxxx               JSR
@@ -196,7 +196,7 @@ class Disassemble
 
     void addressMode0(unsigned operation)
     {
-        /*
+    /*
                                 0   1   2   3   4   5   6   7
         0  = ooo                BRK     RTI RTS
         0  = JSR xxxx               JSR
@@ -235,7 +235,7 @@ class Disassemble
 
     void indexedIndirect(unsigned operation)
     {
-        /*
+    /*
                                 0   1   2   3   4   5   6   7
         2  = ooo (xx,X)         ORA AND EOR ADC STA LDA CMP SBC
     */
@@ -246,7 +246,7 @@ class Disassemble
 
     void addressMode2(unsigned operation)
     {
-        /*
+    /*
                                 0   1   2   3   4   5   6   7
         4  = ooo                COP     WDM
         4  = JSR xxxxxx             JSR
@@ -295,7 +295,7 @@ class Disassemble
 
     void stackRelative(unsigned operation)
     {
-        /*
+    /*
                                 0   1   2   3   4   5   6   7
         6  = ooo xx,S           ORA AND EOR ADC STA LDA CMP SBC
     */
@@ -306,7 +306,7 @@ class Disassemble
 
     void addressMode4(unsigned operation)
     {
-        /*
+    /*
                                 0   1   2   3   4   5   6   7
         8  = ooo xx             TSB BIT     STZ STY LDY CPY CPX
         8  = MVP xx yy                  MVP
@@ -329,7 +329,7 @@ class Disassemble
 
     void directPageAlu0(unsigned operation)
     {
-        /*
+    /*
                                 0   1   2   3   4   5   6   7
         A  = ooo xx             ORA AND EOR ADC STA LDA CMP SBC
     */
@@ -340,7 +340,7 @@ class Disassemble
 
     void directPageAlu1(unsigned operation)
     {
-        /*
+    /*
                                 0   1   2   3   4   5   6   7
         C  = ooo xx             ASL ROL LSR ROR STX LDX DEC INC
     */
@@ -353,7 +353,7 @@ class Disassemble
 
     void indirectLong(unsigned operation)
     {
-        /*
+    /*
                                 0   1   2   3   4   5   6   7
         E  = ooo [xx]           ORA AND EOR ADC STA LDA CMP SBC
     */
@@ -364,7 +364,7 @@ class Disassemble
 
     void implied0(unsigned operation)
     {
-        /*
+    /*
                                 0   1   2   3   4   5   6   7
         10 = ooo                PHP PLP PHA PLA DEY TAY INY INX
     */
@@ -376,7 +376,7 @@ class Disassemble
 
     void immediate(unsigned operation)
     {
-        /*
+    /*
                                 0   1   2   3   4   5   6   7
         12 = ooo #xxxx          ORA AND EOR ADC BIT LDA CMP SBC
     */
@@ -389,7 +389,7 @@ class Disassemble
 
     void implied2(unsigned operation)
     {
-        /*
+    /*
                                 0   1   2   3   4   5   6   7
         14 = ooo                ASL ROL LSR ROR TXA TAX DEX NOP
     */
@@ -401,7 +401,7 @@ class Disassemble
 
     void implied4(unsigned operation)
     {
-        /*
+    /*
                                 0   1   2   3   4   5   6   7
         16 = ooo                PHD PLD PHK RTL PHB PLB WAI XBA
     */
@@ -413,7 +413,7 @@ class Disassemble
 
     void addressModeC(unsigned operation)
     {
-        /*
+    /*
                                 0   1   2   3   4   5   6   7
         18 = ooo xxxx           TSB BIT JMP     STY LDY CPY CPX
         18 = JMP (xxxx)                     JMP
@@ -430,7 +430,7 @@ class Disassemble
 
     void direct0(unsigned operation)
     {
-        /*
+    /*
                                 0   1   2   3   4   5   6   7
         1A = ooo xxxx           ORA AND EOR ADC STA LDA CMP SBC
     */
@@ -441,20 +441,20 @@ class Disassemble
 
     void direct1(unsigned operation)
     {
-        /*
+    /*
                                 0   1   2   3   4   5   6   7
         1C = ooo xxxx           ASL ROL LSR ROR STX LDX DEC INC
     */
 
         const static std::string operations[]{"ASL"s, "ROL"s, "LSR"s, "ROR"s, "STX"s, "LDX"s, "DEC"s, "INC"s};
 
-        std::cout << formatOperandBytes(0) << operations[operation];
+        std::cout << formatOperandBytes(2) << operations[operation];
         std::cout << ' ' << handleWordAddress();
     }
 
     void directLong(unsigned operation)
     {
-        /*
+    /*
                                 0   1   2   3   4   5   6   7
         1E = ooo xxxxxx         ORA AND EOR ADC STA LDA CMP SBC
     */
@@ -465,7 +465,7 @@ class Disassemble
 
     void branch(unsigned operation)
     {
-        /*
+    /*
                                 0   1   2   3   4   5   6   7
         1  = Boo xx             BPL BMI BVC BVS BCC BCS BNE BEQ
     */
@@ -478,7 +478,7 @@ class Disassemble
 
     void indirectIndexed(unsigned operation)
     {
-        /*
+    /*
                                 0   1   2   3   4   5   6   7
         3  = ooo (xx),Y         ORA AND EOR ADC STA LDA CMP SBC
     */
@@ -489,7 +489,7 @@ class Disassemble
 
     void indirectShort(unsigned operation)
     {
-        /*
+    /*
                                 0   1   2   3   4   5   6   7
         5  = ooo (xx)           ORA AND EOR ADC STA LDA CMP SBC
     */
@@ -500,7 +500,7 @@ class Disassemble
 
     void stackRelativeIndirectIndexed(unsigned operation)
     {
-        /*
+    /*
                                 0   1   2   3   4   5   6   7
         7  = ooo (xx,S),Y       ORA AND EOR ADC STA LDA CMP SBC
     */
@@ -511,7 +511,7 @@ class Disassemble
 
     void addressMode14(unsigned operation)
     {
-        /*
+    /*
                                 0   1   2   3   4   5   6   7
         9  = ooo xx             TRB
         9  = ooo xx,X               BIT     STZ STY LDY
@@ -557,18 +557,18 @@ class Disassemble
 
     void indexdDirectPageAlu0(unsigned operation)
     {
-        /*
+    /*
                                 0   1   2   3   4   5   6   7
         B  = ooo xx,X           ORA AND EOR ADC STA LDA CMP SBC
     */
 
         std::cout << formatOperandBytes(1) << operations_alu0[operation];
-        std::cout << ' ' << format(loadByte());
+        std::cout << ' ' << format(loadByte()) << ",x"s;
     }
 
     void indexdDirectPageAlu1(unsigned operation)
     {
-        /*
+    /*
                                 0   1   2   3   4   5   6   7
         D  = ooo xx,X           ASL ROL LSR ROR STX LDX DEC INC
     */
@@ -576,12 +576,12 @@ class Disassemble
         const static std::string operations[]{"ASL"s, "ROL"s, "LSR"s, "ROR"s, "STX"s, "LDX"s, "DEC"s, "INC"s};
 
         std::cout << formatOperandBytes(1) << operations[operation];
-        std::cout << ' ' << format(loadByte());
+        std::cout << ' ' << format(loadByte()) << ",x"s;
     }
 
     void indirectLongIndexed(unsigned operation)
     {
-        /*
+    /*
                                 0   1   2   3   4   5   6   7
         F  = ooo [xx],Y         ORA AND EOR ADC STA LDA CMP SBC
     */
@@ -592,7 +592,7 @@ class Disassemble
 
     void implied1(unsigned operation)
     {
-        /*
+    /*
                                 0   1   2   3   4   5   6   7
         11 = ooo                CLC SEC CLI SEI TYA CLV CLD SED
     */
@@ -604,7 +604,7 @@ class Disassemble
 
     void indexedY(unsigned operation)
     {
-        /*
+    /*
                                 0   1   2   3   4   5   6   7
         13 = ooo xxxx,Y         ORA AND EOR ADC STA LDA CMP SBC
     */
@@ -615,7 +615,7 @@ class Disassemble
 
     void implied3(unsigned operation)
     {
-        /*
+    /*
                                 0   1   2   3   4   5   6   7
         15 = ooo                INC DEC PHY PLY TXS TSX PHX PLX
     */
@@ -627,7 +627,7 @@ class Disassemble
 
     void implied5(unsigned operation)
     {
-        /*
+    /*
                                 0   1   2   3   4   5   6   7
         17 = ooo                TCS TSC TCD TDC TXY TYX STP XCE
     */
@@ -639,7 +639,7 @@ class Disassemble
 
     void addressMode1C(unsigned operation)
     {
-        /*
+    /*
                                 0   1   2   3   4   5   6   7
         19 = ooo xxxx           TRB             STZ
         19 = ooo xxxx,X             BIT             LDY
@@ -684,7 +684,7 @@ class Disassemble
 
     void indexedX(unsigned operation)
     {
-        /*
+    /*
                                 0   1   2   3   4   5   6   7
         1B = ooo xxxx,X         ORA AND EOR ADC STA LDA CMP SBC
     */
@@ -695,7 +695,7 @@ class Disassemble
 
     void addressMode1E(unsigned operation)
     {
-        /*
+    /*
                                 0   1   2   3   4   5   6   7
         1D = ooo xxxx,X         ASL ROL LSR ROR STZ     DEC INC
         1D = ooo xxxx,Y                             LDX
@@ -709,7 +709,7 @@ class Disassemble
 
     void indexedLong(unsigned operation)
     {
-        /*
+    /*
                                 0   1   2   3   4   5   6   7
         1F = ooo xxxxxx,X       ORA AND EOR ADC STA LDA CMP SBC
     */
