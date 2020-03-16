@@ -4,6 +4,7 @@
 
 #include "common_utility/type_traits.h"
 
+#include <algorithm>
 #include <iomanip>
 #include <iostream>
 #include <set>
@@ -316,9 +317,10 @@ class Disassemble
 
         if (operation == 2)
         {
+            byte_t dest_bank(loadByte());
             std::cout << formatOperandBytes(2) << operations[operation];
             std::cout << ' ' << format(loadByte());
-            std::cout << ' ' << format(loadByte());
+            std::cout << ' ' << format(dest_bank);
         }
         else
         {
@@ -538,10 +540,13 @@ class Disassemble
                 break;
 
             case 2:
+            {
+                byte_t dest_bank(loadByte());
                 std::cout << formatOperandBytes(2) << operations[operation];
                 std::cout << ' ' << format(loadByte());
-                std::cout << ' ' << format(loadByte());
+                std::cout << ' ' << format(dest_bank);
                 break;
+            }
 
             case 6:
                 std::cout << formatOperandBytes(1) << operations[operation];
